@@ -202,10 +202,6 @@ function readConfig() {
 			},
 			//邮件发送
 			"mail": {
-				//用户名
-				"user": "",
-				//密码
-				"key": "",
 				//是否启用
 				"send": false,
 				//邮件接收人数组
