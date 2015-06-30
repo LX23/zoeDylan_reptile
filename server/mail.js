@@ -3,7 +3,8 @@ var smtpTransort = require('nodemailer/node_modules/nodemailer-smtp-transport');
 
 var transporter = {};
 
-function sendMail(options, cb) { 
+function sendMail(options, cb) {
+	console.warn(options.auth)
     transporter = nodemailer.createTransport(smtpTransort({
         host: 'smtp.exmail.qq.com',
         port: 465,

@@ -7,7 +7,8 @@
     fs = require('fs'),
     config = './settings.json',
     q = require('queue')(),
-    email = require('./mail.js');
+    email = require('./mail.js'),
+	handlebars = require('handlebars');
 
 /*
  * 爬虫核心
@@ -17,6 +18,7 @@
  * end<data{message}>所有配置全部完成后的执行方法
  */
 function reset(id, fn, end) {
+	readConfig();
 	var op = (typeof (id) == 'object') && id ? id : (typeof (fn) == 'object') && fn ? fn : (typeof (id) == 'number') ? [config.reptile[parseInt(id)]] : config.reptile;
 	fn = (typeof (fn) == 'function') && fn ? fn : (typeof (id) == 'function') ? id : function () { };
 	end = funcDispost(end);
@@ -64,9 +66,9 @@ function reset(id, fn, end) {
 					var
                             img = $(elem.children('img'));
 					if (img.length > 0) {
-						img.attr('src', img.attr(nowConfig.img || 'src'));
+						img.attr('src', img.attr(nowConfig.img || 'src')).css({ 'max-width': '120px', 'max-height': '90px' }).removeAttr('width').removeAttr('height');
 						nowCont.title = iconv.encode(elem.html(), 'utf-8').toString('UTF-8');
-						nowCont.title = "【图片标题】" + nowCont.title + (elem.attr('title') && elem.attr('title').length > 0 ? elem.attr('title') : img.attr('alt'));
+						nowCont.title = nowCont.title + (elem.attr('title') && elem.attr('title').length > 0 ? elem.attr('title') : img.attr('alt'));
 					}
 					cont[cont.length] = nowCont;
 					config.temp[config.temp.length] = nowCont;
@@ -132,15 +134,25 @@ function sendMail(fn) {
 	fn("【邮件发送已启用】");
 	var
         cont = "",
-        emails = [];
+        emails = [],
+		template = function (obj) {
+			return '<p style="margin:10px 0;">【' + obj.name + '】<b>[' + obj.desc + ']</b><a style="margin-left:20px;" href="' + obj.url + '">' + obj.title + '</a></p>';
+		};
+	//template = handlebars.compile('<p style="margin:10px 0;">【{{name}}】<a href="{{url}}">{{title}}</a></p>');
 	for (var i = 0; i < config.temp.length; i++) {
 		var
-            val = config.temp[i];
-		cont += '【' + val.fUrl + '】----<a href="' + val.url + '">' + val.title + '</a><br />';
+            val = config.temp[i]; 
+		cont += template({
+			name: val.name || val.fUrl,
+			desc:val.desc,
+			url: val.url,
+			title: val.title
+		});
 	}
 	for (var i = 0; i < config.setting.mail.receive.length; i++) {
 		emails[i] = config.setting.mail.receive[i].email
 	}
+	//console.warn(handlebars);
 	email.sendMail({
 		title: "test",
 		content: cont,
@@ -161,14 +173,6 @@ function funcDispost(fn) {
  * fn完成后执行的方法
  */
 function dataset(id, fn) {
-	//fn = funcDispost(fn);
-	//if (config.temp.length <= 0) {
-	//    reset(id, function (data) {
-	//        if (data.end) { fn(config.temp); }
-	//    });
-	//} else {
-	//    fn(config.temp);
-	//}
 	var
         cont = readFile(config.setting.dataPath);
 	readConfig();
