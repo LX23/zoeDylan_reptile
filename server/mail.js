@@ -9,14 +9,14 @@ function sendMail(options, cb) {
         port: 465,
         secure: true,
         auth: {
-            user: options.auth.name,
+        	user: options.auth.email,
             pass: options.auth.key
         }
     })); 
     var receiver = options.email;
     console.log("发送邮件给", receiver);
     var mailOptions = {
-    	from: options.auth.name,
+    	from: options.auth.email,
         to: receiver.join(','),
         subject: options.title,
         html: options.content

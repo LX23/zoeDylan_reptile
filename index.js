@@ -91,6 +91,7 @@ io.on('connection', function (socket) {
                 if (data.state) {
                     console.warn('【获取配置文件成功】');
                     data.data.setting.admin.key = "";
+                    data.data.setting.mail.auth.key = "";
                     socket.emit('message', data.message);
                     socket.emit('setting', {
                         state: true,

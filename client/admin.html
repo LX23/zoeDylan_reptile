@@ -121,6 +121,15 @@
                                             <span></span>
                                         </label>
                                     </div>
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">邮箱发送人帐号</span>
+                                        <input type="text" class="form-control email" placeholder="邮箱发送人帐号" aria-describedby="basic-addon1">
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">邮箱发送人密码</span>
+                                        <input type="password" class="form-control emailKey" placeholder="邮箱发送人密码" aria-describedby="basic-addon1">
+                                    </div>
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1">接收用户：</span>
                                         <table class="table receive">
@@ -235,7 +244,9 @@
                     },
                     setting: {
                         name: $('#elem_setting .modal-body input.name'),
-                        key: $('#elem_setting .modal-body input.key')
+                        key: $('#elem_setting .modal-body input.key'),
+                        email: $('#elem_setting .modal-body input.email'),
+                        emailKey: $('#elem_setting .modal-body input.emailKey')
                     }
                 },
                 login: $('#elem_login'),
@@ -302,6 +313,9 @@
                             elemGroup.btn.autoReptile.attr('checked', 'checked');
                             return 'active';
                         })() : '');
+                        elemGroup.input.setting.email.val(data.setting.mail.auth.email);
+                        elemGroup.input.setting.emailKey.val(data.setting.mail.auth.key);
+
                         //邮箱接收用户设置
                         elemGroup.table.receive.html('');
                         for (var i = 0; i < data.setting.mail.receive.length; i++) {
@@ -437,6 +451,9 @@
                 }
                 return retData;
             })();
+
+            config.setting.setting.mail.auth.email = elemGroup.input.setting.email.val();
+            config.setting.setting.mail.auth.key = elemGroup.input.setting.emailKey.val();
             //爬虫设置
             config.setting.reptile = [];
             for (var i = 0; i < elemGroup.table.reptile.children().length - 1; i++) {
@@ -464,6 +481,7 @@
                     name: item.children().eq(6).children('input').val()
                 }
             }
+
             soc.setting(config.setting);
         });
     </script>
