@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="/bootstrap.css" rel="stylesheet" />
+    <link href="/base.css" rel="stylesheet" />
+
+    <script src="/jquery.js"></script>
+    <script src="/bootstrap.js"></script>
+    <script src="/socket.io.js"></script>
+    <script src="/base.js"></script>
+</head>
+<body>
+    <h1>爬虫——reptile</h1>
+    <div class="message">
+        <div class="alert alert-info" role="alert"></div>
+    </div>
+    <!--按钮组-->
+    <div class="btn-group" role="group" aria-label="...">
+        <button type="button" class="btn btn-default">刷新数据</button>
+    </div>
+    <!--列表-->
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <table class="table datalist">
+                    <thead>
+                        <tr>
+                            <th>
+                                网站
+                            </th>
+                            <th>
+                                位置(jq选择器)
+                            </th>
+                            <th>
+                                内容
+                            </th>
+                            <th>
+                                描述
+                            </th>
+                            <th>
+                                时间
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        var
+            elemGroup = {
+                btnGroup: $('.btn-group'),
+                btn: {
+                    dataset: $('.btn-group').children().eq(0)
+                },
+                table: {
+                    datalist: $('.table.datalist tbody')
+                }
+            }
+        var
+            config = {},
+            soc = new base({
+                dataset: function (data) {
+                    elemGroup.table.datalist.html('');
+                    for (var i = 0; i < data.length; i++) {
+                        var
+                            item = data[i];
+                        elemGroup.table.datalist.append('<tr><td><a target="_blank" href="' + item.fUrl + '">' + item.name + '</a></td><td>' + item.place + '</td><td><a target="_blank" href="' + item.url + '">' + item.title + '</a></td><td>' + item.desc + '</td><td>' + item.time + '</td></tr>');
+                    }
+                    elemGroup.btn.dataset.removeAttr('disabled');
+                }
+            });
+
+        //按钮组所有按钮
+        elemGroup.btnGroup.children().click(function () {
+            $(this).attr('disabled', 'disabled');
+        });
+        //数据获取按钮
+        elemGroup.btn.dataset.click(function () {
+            soc.dataset();
+        });
+        elemGroup.btn.dataset.click();
+    </script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="/bootstrap.css" rel="stylesheet" />
+    <link href="/base.css" rel="stylesheet" />
+
+    <script src="/jquery.js"></script>
+    <script src="/bootstrap.js"></script>
+    <script src="/socket.io.js"></script>
+    <script src="/base.js"></script>
+</head>
+<body>
+    <h1>爬虫——reptile</h1>
+    <div class="message">
+        <div class="alert alert-info" role="alert"></div>
+    </div>
+    <!--按钮组-->
+    <div class="btn-group" role="group" aria-label="...">
+        <button type="button" class="btn btn-default">获取数据</button>
+        <button type="button" class="btn btn-default">请求服务器刷新</button>
+        <button type="button" class="btn btn-default">修改配置文件</button>
+    </div>
+    <!--列表-->
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <table class="table datalist">
+                    <thead>
+                        <tr>
+                            <th>
+                                网站
+                            </th>
+                            <th>
+                                位置(jq选择器)
+                            </th>
+                            <th>
+                                内容
+                            </th>
+                            <th>
+                                描述
+                            </th>
+                            <th>
+                                时间
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!--弹窗组-->
+    <!--登录框-->
+    <div id="elem_login" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">配置</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-addon">帐号</span>
+                        <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1" value="">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">密码</span>
+                        <input type="password" class="form-control" placeholder="password" aria-describedby="basic-addon1" value="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary login">登录</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--设置框-->
+    <div id="elem_setting" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">设置</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a data-toggle="tab" href="#panel-537415">系统设置</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#panel-62718">爬虫设置</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="panel-537415">
+                                <p>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">管理员帐号</span>
+                                        <input type="text" class="form-control name" placeholder="输入你的帐号" aria-describedby="basic-addon1">
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">管理员密码</span>
+                                        <input type="password" class="form-control key" placeholder="输入你的密码" aria-describedby="basic-addon1">
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">服务启动自动发送邮件</span>
+                                        <label class="btn-switch email">
+                                            <input type="checkbox">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">服务启动自动刷新爬虫数据</span>
+                                        <label class="btn-switch autoReptile">
+                                            <input type="checkbox">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">接收用户：</span>
+                                        <table class="table receive">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        操作
+                                                    </th>
+                                                    <th>
+                                                        姓名
+                                                    </th>
+                                                    <th>
+                                                        邮箱
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <button class="remMe">删除</button>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </p>
+                            </div>
+                            <div class="tab-pane" id="panel-62718">
+                                <table class="table reptile">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                操作
+                                            </th>
+                                            <th>
+                                                网站
+                                            </th>
+                                            <th>
+                                                选择器
+                                            </th>
+                                            <th>
+                                                描述
+                                            </th>
+                                            <th>
+                                                图片
+                                            </th>
+                                            <th>
+                                                编码
+                                            </th>
+                                            <th>
+                                                网站名称
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <button class="remMe">删除</button>
+                                            </td>
+                                            <td>
+                                                <input type="text" />
+                                            </td>
+                                            <td>
+                                                <input type="text" />
+                                            </td>
+                                            <td>
+                                                <input type="text" />
+                                            </td>
+                                            <td>
+                                                <input type="text" />
+                                            </td>
+                                            <td>
+                                                <input type="text" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary sub">完成</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <script>
+        var
+            elemGroup = {
+                btnGroup: $('.btn-group'),
+                btn: {
+                    dataset: $('.btn-group').children().eq(0),
+                    reset: $('.btn-group').children().eq(1),
+                    login: $('#elem_login button.login'),
+                    setting_sub: $('#elem_setting button.sub'),
+                    setting: $('.btn-group').children().eq(2),
+                    switchBtn: $('.btn-switch.email input'),
+                    autoReptile: $('.btn-switch.autoReptile input')
+                },
+                input: {
+                    login: {
+                        name: $('#elem_login .modal-body input:eq(0)'),
+                        key: $('#elem_login .modal-body input:eq(1)')
+                    },
+                    setting: {
+                        name: $('#elem_setting .modal-body input.name'),
+                        key: $('#elem_setting .modal-body input.key')
+                    }
+                },
+                login: $('#elem_login'),
+                setting: $('#elem_setting'),
+                table: {
+                    datalist: $('.table.datalist tbody'),
+                    reptile: $('.table.reptile tbody'),
+                    receive: $('.table.receive tbody')
+                },
+                tableGroup: $('.table')
+            }
+
+        $('#elem_login').modal({
+            show: true,
+            keyboard: false,
+            backdrop: 'static'
+        });
+        $('#elem_setting').modal({
+            show: false,
+            keyboard: false,
+            backdrop: 'static'
+        });
+        var
+            config = {},
+            soc = new base({
+                message: function (data) {
+                    var
+                        fe = $('.message'),
+                        info = fe.children('.alert-info');
+                    if (typeof data == 'string') {
+                        info.prepend(data + '<br />');
+                    }
+                },
+                login: function (data) {
+                    if (data.state) {
+                        $('#elem_login').modal('hide');
+                    } else {
+                        elemGroup.login.find('.modal-header h4').html('登录<span class="label label-danger">' + data.message + '</span>');
+                    }
+                    elemGroup.btn.login.removeAttr('disabled').html('登录');
+                },
+                dataset: function (data) {
+                    elemGroup.table.datalist.html('');
+                    for (var i = 0; i < data.length; i++) {
+                        var
+                            item = data[i];
+                        elemGroup.table.datalist.append('<tr><td><a target="_blank" href="' + item.fUrl + '">' + item.name + '</a></td><td>' + item.place + '</td><td><a target="_blank" href="' + item.url + '">' + item.title + '</a></td><td>' + item.desc + '</td><td>' + item.time + '</td></tr>');
+                    }
+                    elemGroup.btn.dataset.removeAttr('disabled');
+                },
+                setting: function (data) {
+                    elemGroup.setting.find('.modal-header h4').html('设置<span class="label label-danger">' + data.message + '</span>');
+                    if (data.state) {
+                        data = data.data;
+                        config.setting = data;
+                        //系统设置
+                        elemGroup.input.setting.name.val(data.setting.admin.name);
+                        elemGroup.input.setting.key.val(data.setting.admin.key);
+                        elemGroup.btn.switchBtn.addClass(data.setting.mail.send == true ? (function () {
+                            elemGroup.btn.switchBtn.attr('checked', 'checked');
+                            return 'active';
+                        })() : '');
+                        elemGroup.btn.autoReptile.addClass(data.setting.autoReptile == true ? (function () {
+                            elemGroup.btn.autoReptile.attr('checked', 'checked');
+                            return 'active';
+                        })() : '');
+                        //邮箱接收用户设置
+                        elemGroup.table.receive.html('');
+                        for (var i = 0; i < data.setting.mail.receive.length; i++) {
+                            var
+                                temp = data.setting.mail.receive[i];
+                            elemGroup.table.receive.append('<tr><td><button class="remMe">删除</button></td><td><input type="text" value="' + temp.name + '" /></td><td><input type="text" value="' + temp.email + '" /></td>');
+                        }
+                        elemGroup.table.receive.append('<tr><td><button class="addlist">添加</button><button class="remlist">移除</button></td></tr>');
+                        //爬虫设置
+                        var
+                            reptile = data.reptile;
+                        elemGroup.table.reptile.html('');
+                        for (var i = 0; i < reptile.length; i++) {
+                            var
+                                item = reptile[i];
+                            elemGroup.table.reptile.append('<tr><td><button class="remMe">删除</button></td><td><input type="text" value="' + item.url + '" /></td>' + (function () {
+                                var
+                                    elem = '',
+                                    desc = '',
+                                    img = '';
+                                for (var ii = 0; ii < item.selector.length; ii++) {
+                                    var
+                                        temp = item.selector[ii];
+                                    elem += '<input type="text" value="' + temp.elem + '" /><br/>';
+                                    desc += (temp.desc ? '<input type="text" value="' + (temp.desc || '') + '" /><br/>' : '');
+                                    img += (temp.img ? '<input type="text" value="' + (temp.img || '') + '" /><br/>' : '');
+                                }
+                                return '<td>' + elem + '<button class="additem">添加</button><button class="remitem">移除</button></td><td>' + desc + '<button class="additem">添加</button><button class="remitem">移除</button></td><td>' + img + '<button class="additem">添加</button><button class="remitem">移除</button></td>'
+                            })() + '<td><input type="text" value="' + item.encoding + '" /></td><td><input type="text" value="' + item.name + '" /></td></tr>');
+                        }
+                        elemGroup.table.reptile.append('<tr><td><button class="addlist">添加</button><button class="remlist">移除</button></td></tr>');
+                    }
+                    elemGroup.btn.setting_sub.removeAttr('disabled').html('完成');
+                },
+                reset: function () {
+                    elemGroup.btn.reset.removeAttr('disabled');
+                }
+            });
+
+        //添加按钮
+        elemGroup.tableGroup.delegate('button.additem', 'click', function () {
+            $(this).before('<input type="text"/><br/>');
+        });
+        //删除按钮
+        elemGroup.tableGroup.delegate('button.remitem', 'click', function () {
+            var
+                input = $(this).parent().children('input');
+            if (input.length > 1) {
+                input.eq(input.length - 1).remove();
+                $(this).parent().children('br').eq(input.length - 1).remove();
+            }
+        });
+        //添加一行按钮
+        elemGroup.tableGroup.delegate('button.addlist', 'click', function () {
+            var
+                fElem = $(this).parents('table');
+            if ($(this).parents('table').hasClass('reptile')) {
+                $(this).parent().parent().before('<tr><td><button class="remMe">删除</button></td><td><input type="text"  placeholder="输入网址" value=""></td><td><button class="additem">添加</button><button class="remitem">移除</button></td><td><button class="additem">添加</button><button class="remitem">移除</button></td><td><button class="additem">添加</button><button class="remitem">移除</button></td><td><input type="text" value=""></td><td><input type="text" value=""></td></tr>');
+            } else if ($(this).parents('table').hasClass('receive')) {
+                $(this).parent().parent().before('<tr><td><button class="remMe">删除</button></td><td><input type="text"  placeholder="输入姓名" value=""></td> <td><input type="text" value=""></td></tr>');
+            }
+        });
+        //移除一行按钮
+        elemGroup.tableGroup.delegate('button.remlist', 'click', function () {
+            var
+                input = $(this).parent().parent().parent().children('tr');
+            if (input.length > 1) {
+                input.eq(input.length - 2).remove();
+            }
+        });
+        //移除一行按钮
+        elemGroup.tableGroup.delegate('button.remMe', 'click', function () {
+            $(this).parent().parent().remove();
+        });
+        //开关按钮
+        elemGroup.btn.switchBtn.change(function () {
+            if ($(this).hasClass('active')) {
+                $(this).removeClass('active');
+            } else {
+                $(this).addClass('active');
+            }
+        });
+        elemGroup.btn.autoReptile.change(function () {
+            if ($(this).hasClass('active')) {
+                $(this).removeClass('active');
+            } else {
+                $(this).addClass('active');
+            }
+        });
+        //按钮组所有按钮
+        elemGroup.btnGroup.children().click(function () {
+            $(this).attr('disabled', 'disabled');
+        });
+        //刷新按钮
+        elemGroup.btn.reset.click(function () {
+            soc.reset();
+        });
+        //数据获取按钮
+        elemGroup.btn.dataset.click(function () {
+            soc.dataset();
+        });
+        //登录按钮
+        elemGroup.btn.login.click(function () {
+            $(this).attr('disabled', 'disabled').html('登录中,请稍候……');
+            soc.login({ name: elemGroup.input.login.name.val(), key: elemGroup.input.login.key.val() });
+        });
+        //设置按钮
+        elemGroup.btn.setting.click(function () {
+            $(this).removeAttr('disabled');
+            $('#elem_setting').modal('show');
+            soc.setting();
+        });
+        //设置提交
+        elemGroup.btn.setting_sub.click(function () {
+            $(this).attr('disabled', 'disabled').html('登录中,请稍候……');
+
+            //系统设置
+            config.setting.setting.admin.name = elemGroup.input.setting.name.val();
+            config.setting.setting.admin.key = elemGroup.input.setting.key.val();
+            config.setting.setting.mail.send = (function () { return elemGroup.btn.switchBtn.hasClass('active'); })();
+            config.setting.setting.autoReptile = (function () { return elemGroup.btn.autoReptile.hasClass('active'); })();
+            config.setting.setting.mail.receive = (function () {
+                var
+                    nowElem = elemGroup.table.receive.children(),
+                    retData = [];
+                for (var i = 0; i < nowElem.length - 1; i++) {
+                    var
+                        temp = $(nowElem[i]);
+                    retData[i] = {
+                        "email": temp.find('input').eq(1).val(),
+                        "name": temp.find('input').eq(0).val()
+                    }
+                }
+                return retData;
+            })();
+            //爬虫设置
+            config.setting.reptile = [];
+            for (var i = 0; i < elemGroup.table.reptile.children().length - 1; i++) {
+                var
+                    item = elemGroup.table.reptile.children().eq(i);
+                config.setting.reptile[i] = {
+                    url: item.children().eq(1).children('input').val(),
+                    selector: (function () {
+                        var
+                            list = item.children().eq(2).children('input'),
+                            retData = [];
+                        for (var ii = 0; ii < list.length ; ii++) {
+                            var
+                                elem = list.eq(ii).val(),
+                                desc = item.children().eq(3).children('input').eq(ii).val(),
+                                img = item.children().eq(4).children('input').eq(ii).val();
+                            retData[ii] = {};
+                            retData[ii]['elem'] = list.eq(ii).val();
+                            retData[ii]['desc'] = desc;
+                            retData[ii]['img'] = img;
+                        }
+                        return retData;
+                    })(),
+                    encoding: item.children().eq(5).children('input').val(),
+                    name: item.children().eq(6).children('input').val()
+                }
+            }
+            soc.setting(config.setting);
+        });
+    </script>
+</body>
+</html>

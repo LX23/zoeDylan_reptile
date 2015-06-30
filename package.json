@@ -1,0 +1,16 @@
+{
+    "name": "IIOO",
+    "description": "IIOO",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "request": "x",
+        "cheerio": "x",
+        "socket.io": "x",
+        "express": "4.x",
+        "iconv-lite": "x",
+        "bufferhelper": "x",
+        "nodemailer": "x",
+        "queue": "x"
+    }
+}

@@ -1,0 +1,293 @@
+﻿var
+	request = require('request'),
+    iconv = require('iconv-lite'),
+    BufferHelper = require('bufferhelper'),
+    $ = require('cheerio'),
+    http = require('http'),
+    fs = require('fs'),
+    config = './settings.json',
+    q = require('queue')(),
+    email = require('./mail.js');
+
+/*
+ * 爬虫核心
+ * <id,fn(data),end(data)>
+ * id:配置文件id或者配置
+ * fn<data{message}>:每一个配置完成后的执行方法
+ * end<data{message}>所有配置全部完成后的执行方法
+ */
+function reset(id, fn, end) {
+	var op = (typeof (id) == 'object') && id ? id : (typeof (fn) == 'object') && fn ? fn : (typeof (id) == 'number') ? [config.reptile[parseInt(id)]] : config.reptile;
+	fn = (typeof (fn) == 'function') && fn ? fn : (typeof (id) == 'function') ? id : function () { };
+	end = funcDispost(end);
+	config.temp = [];
+	//转码
+	function transcoding(cont, op) {
+		return iconv.decode(new BufferHelper().concat(cont).toBuffer(), op.encoding || 'utf-8');
+	}
+
+	//处理数据，逻辑循环
+	function dispose(op, body) {
+		var
+			cont = [],
+            body = $(body),
+            num = op.selector.length;
+		$(op.selector).each(function () {
+			var
+				nowConfig = this,
+                all = $(body.find(nowConfig.elem)),
+                temp = [],
+                detection = function (data) {
+                	//是否为空值
+                	if (!data.title || !data.url) { return false; }
+                		//是否存在重复
+                	else if (temp.indexOf(data.url) > -1) { return false; }
+                		//a标签是javascript:;
+                	else if (data.url.search(/javascript/) > -1) { return false; }
+                	else { temp[temp.length] = data.url; return true; }
+                };
+			//a标签循环
+			$(all).each(function () {
+				var
+					elem = $(this),
+                    nowCont = {
+                    	url: elem.attr('href').replace(/^\s|\s$/, ""),
+                    	title: iconv.encode(elem.html(), 'utf-8').toString('UTF-8'),
+                    	fUrl: op.url,
+                    	place: nowConfig.elem,
+                    	desc: nowConfig.desc,
+                    	time: new Date().toLocaleString(),
+                    	name: op.name
+                    };
+				if (detection(nowCont)) {
+					//图片处理
+					var
+                            img = $(elem.children('img'));
+					if (img.length > 0) {
+						img.attr('src', img.attr(nowConfig.img || 'src'));
+						nowCont.title = iconv.encode(elem.html(), 'utf-8').toString('UTF-8');
+						nowCont.title = "【图片标题】" + nowCont.title + (elem.attr('title') && elem.attr('title').length > 0 ? elem.attr('title') : img.attr('alt'));
+					}
+					cont[cont.length] = nowCont;
+					config.temp[config.temp.length] = nowCont;
+				}
+			});
+		});
+		return cont;
+	}
+
+	//URL处理 消息推送
+	function urlDispose(op, cb) {
+		console.warn("【页面爬取】" + op.url);
+		fn({
+			message: "【页面爬取】" + op.url
+		});
+		request({ url: op.url, encoding: null }, function (error, response, body) {
+			if (!error && response.statusCode == 200) {
+				var cont = dispose(op, transcoding(body, op));
+				console.warn("【已更新】" + op.url + "[" + cont.length + "]");
+				fn({
+					message: "【已更新】" + op.url + "[" + cont.length + "]"
+				});
+				cb();
+			} else {
+				fn({
+					message: "【出错】" + error + '||' + op.url,
+				});
+				cb(err);
+				console.log("【出错】" + error + '||' + op.url);
+			}
+		});
+	}
+
+	$(op).each(function () {
+		var opt = this;
+		q.push(function (cb) {
+			urlDispose(opt, cb);
+		});
+	});
+
+	q.start(function () {
+		saveData();
+		console.warn("【已全部更新】");
+		fn({
+			message: "已全部更新!"
+		})
+		end();
+		//发送邮件
+		sendMail();
+
+	});
+}
+
+//邮件发送
+function sendMail(fn) {
+	fn = funcDispost(fn);
+	if (!config.setting.mail.send) {
+		console.warn("【邮件发送未启用】");
+		fn("【邮件发送未启用】");
+		return false;
+	}
+	console.warn("【邮件发送已启用】");
+	fn("【邮件发送已启用】");
+	var
+        cont = "",
+        emails = [];
+	for (var i = 0; i < config.temp.length; i++) {
+		var
+            val = config.temp[i];
+		cont += '【' + val.fUrl + '】----<a href="' + val.url + '">' + val.title + '</a><br />';
+	}
+	for (var i = 0; i < config.setting.mail.receive.length; i++) {
+		emails[i] = config.setting.mail.receive[i].email
+	}
+	email.sendMail({
+		title: "test",
+		content: cont,
+		email: emails,
+		auth: config.setting.mail.auth
+	}, fn);
+}
+
+//function处理
+function funcDispost(fn) {
+	return (typeof (fn) == 'function') ? fn : function () { };
+}
+
+/*
+ * 读取爬虫数据
+ * <id,fn>
+ * id:配置列表id号
+ * fn完成后执行的方法
+ */
+function dataset(id, fn) {
+	//fn = funcDispost(fn);
+	//if (config.temp.length <= 0) {
+	//    reset(id, function (data) {
+	//        if (data.end) { fn(config.temp); }
+	//    });
+	//} else {
+	//    fn(config.temp);
+	//}
+	var
+        cont = readFile(config.setting.dataPath);
+	readConfig();
+	if (config.temp.length <= 0 && cont) { config.temp = JSON.parse(cont); } else { cont = []; }
+	fn(config.temp);
+}
+
+//配置文件获取
+function readConfig() {
+	//获取配置文件 
+	config = readFile((typeof (config) != 'string') ? config.setting.path : config);
+	config = config ? JSON.parse(config) : {
+		//爬虫匹配
+		"reptile": [],
+		//设置
+		"setting": {
+			//配置文件位置
+			"path": "./settings.json",
+			//数据保存文件位置
+			"dataPath": "./db/reptile.data.json",
+			//自动爬取
+			"autoReptile": false,
+			//管理员信息
+			"admin": {
+				//管理员地址
+				"url": "/admin",
+				//管理员姓名
+				"name": "",
+				//管理员钥匙 
+				"key": ""
+			},
+			//邮件发送
+			"mail": {
+				//用户名
+				"user": "",
+				//密码
+				"key": "",
+				//是否启用
+				"send": false,
+				//邮件接收人数组
+				"receive": [
+                {
+                	"name": "",
+                	"email": ""
+                }
+				],
+				//邮件发送人
+				"auth": {
+					//邮箱(有点不合理,后期改)
+					"name": "",
+					//密码
+					"key": ""
+				}
+			}
+		}
+	}
+	config.temp = config.temp || [];
+}
+
+//保存配置文件
+function saveConfig() {
+	saveFile(config.setting.path, JSON.stringify(config));
+}
+
+//保存数据
+function saveData() {
+	saveFile(config.setting.dataPath, JSON.stringify(config.temp));
+}
+
+//读取文件
+function readFile(path) {
+	if (fs.existsSync(path)) {
+		return fs.readFileSync(path, { encoding: 'utf-8' });
+	} else {
+		console.warn("【文件不存在】" + path);
+		return false;
+	}
+}
+
+//保存文件
+function saveFile(path, cont) {
+	fs.writeFile(path, cont, { encoding: 'utf-8' });
+}
+
+//配置文件设置
+function setting(op, fn) {
+	fn = funcDispost(fn);
+	if (op) {
+		config = op;
+		console.warn(config);
+		saveConfig();
+		fn({
+			state: true,
+			message: "配置修改成功!",
+			data: {
+				setting: config.setting,
+				reptile: config.reptile
+			}
+		});
+	} else {
+		fn({
+			data: {
+				setting: config.setting,
+				reptile: config.reptile
+			},
+			type: 'get',
+			state: true,
+			message: "配置获取成功！"
+		});
+	}
+}
+module.exports = (function () {
+	readConfig();
+	if (config.setting.autoReptile) { reset(); }
+	return {
+		dataset: dataset,
+		reset: reset,
+		sendMail: sendMail,
+		readConfig: function () { readConfig(); return config; },
+		setting: setting
+	}
+})();

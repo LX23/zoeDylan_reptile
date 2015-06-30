@@ -1,0 +1,131 @@
+﻿body {
+    width: 95%;
+    margin: 0 auto;
+    height: 100%;
+}
+
+.input-group {
+    margin: 10px 0;
+}
+
+div.message div {
+    overflow: hidden;
+    height: 80px;
+}
+
+#elem_setting .modal-lg {
+    width: 90%;
+    max-height: 90%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+table.reptile input {
+    margin: 10px 0;
+}
+
+
+/*开关按钮*/
+
+.btn-switch {
+    display: block;
+    position: absolute;
+    width: 200px;
+    height: 40px;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background: -webkit-linear-gradient(top, #11181f 0%, #161f29 100%);
+    background: linear-gradient(to bottom, #11181f 0%, #161f29 100%);
+    border-radius: 40px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+    .btn-switch span {
+        position: absolute;
+        display: block;
+    }
+
+        .btn-switch span:first-of-type {
+            z-index: 100;
+            top: 4px;
+            right: 10px;
+            width: 70px;
+            height: 30px;
+            background: -webkit-linear-gradient(top, #2c3e50 0%, #1e2a36 100%);
+            background: linear-gradient(to bottom, #2c3e50 0%, #1e2a36 100%);
+            box-shadow: 0 6px 4px rgba(255, 255, 255, 0.1) inset, 0 2px 0px rgba(255, 255, 255, 0.2) inset, 0 -6px 0px rgba(0, 0, 0, 0.2) inset, 0 -2px 0px rgba(0, 0, 0, 0.2) inset, 0 2px 2px rgba(0, 0, 0, 0.4), -4px 2px 8px rgba(0, 0, 0, 0.4), 2px 0 1px rgba(242, 201, 197, 0.5) inset;
+            border-radius: 36px;
+            -webkit-transition: right 400ms cubic-bezier(1, 0, 0, 1), box-shadow 400ms ease;
+            transition: right 400ms cubic-bezier(1, 0, 0, 1), box-shadow 400ms ease;
+        }
+
+        .btn-switch span:nth-last-of-type(-n+2) {
+            z-index: 10;
+            top: 4px;
+            width: 100px;
+            height: 32px;
+            -webkit-transition: opacity 800ms ease 100ms;
+            transition: opacity 800ms ease 100ms;
+        }
+
+            .btn-switch span:nth-last-of-type(-n+2):after {
+                position: absolute;
+                top: 5px;
+                line-height: 1;
+                font-family: "Open Sans";
+                font-weight: 800;
+                font-size: 24px;
+                color: white;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 20px #ffffff;
+            }
+
+        .btn-switch span:nth-of-type(2) {
+            left: 4px;
+            background: -webkit-linear-gradient(top, #c0392b 0%, #d65548 100%);
+            background: linear-gradient(to bottom, #c0392b 0%, #d65548 100%);
+            border-top-left-radius: 36px;
+            border-bottom-left-radius: 36px;
+            box-shadow: 4px 4px 12px 4px rgba(0, 0, 0, 0.5) inset, 0 -2px 8px rgba(0, 0, 0, 0.4) inset;
+        }
+
+            .btn-switch span:nth-of-type(2):after {
+                content: "OFF";
+                left: 18px;
+            }
+
+        .btn-switch span:last-of-type {
+            right: 4px;
+            background: -webkit-linear-gradient(top, #2ecc71 0%, #7ee2a8 100%);
+            background: linear-gradient(to bottom, #2ecc71 0%, #7ee2a8 100%);
+            border-top-right-radius: 36px;
+            border-bottom-right-radius: 36px;
+            box-shadow: -4px 4px 12px 4px rgba(0, 0, 0, 0.5) inset, 0 -2px 8px rgba(0, 0, 0, 0.4) inset;
+            opacity: 0.2;
+        }
+
+            .btn-switch span:last-of-type:after {
+                content: "ON";
+                right: 22px;
+            }
+
+    .btn-switch input[type="checkbox"] {
+        display: none;
+    }
+
+        .btn-switch input[type="checkbox"]:checked ~ span:first-of-type {
+            right: 120px;
+            box-shadow: 0 6px 4px rgba(255, 255, 255, 0.1) inset, 0 2px 0px rgba(255, 255, 255, 0.2) inset, 0 -6px 0px rgba(0, 0, 0, 0.2) inset, 0 -2px 0px rgba(0, 0, 0, 0.2) inset, 0 2px 2px rgba(0, 0, 0, 0.4), 4px 2px 8px rgba(0, 0, 0, 0.4), -2px 0 1px rgba(209, 245, 224, 0.5) inset;
+        }
+
+        .btn-switch input[type="checkbox"]:checked ~ span:nth-of-type(2) {
+            opacity: 0.2;
+        }
+
+        .btn-switch input[type="checkbox"]:checked ~ span:last-of-type {
+            opacity: 1;
+        }
