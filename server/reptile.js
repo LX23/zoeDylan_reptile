@@ -306,6 +306,7 @@ function setting(op, fn) {
 		});
 	}
 }
+
 module.exports = (function () {
 	readConfig();
 	if (config.setting.autoReptile) { reset(); }
