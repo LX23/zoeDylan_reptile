@@ -16,8 +16,11 @@ div.message div {
 #elem_setting .modal-lg {
     width: 90%;
     max-height: 90%;
-    overflow: hidden;
-    overflow-y: auto;
+}
+#elem_setting .modal-lg .modal-body{
+    overflow: hidden; 
+    overflow-y:auto;
+    max-height:482px;
 }
 
 table.reptile input {
