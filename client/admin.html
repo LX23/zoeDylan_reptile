@@ -121,7 +121,6 @@
                                             <span></span>
                                         </label>
                                     </div>
-
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1">邮箱发送人帐号</span>
                                         <input type="text" class="form-control email" placeholder="邮箱发送人帐号" aria-describedby="basic-addon1">
@@ -129,6 +128,10 @@
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1">邮箱发送人密码</span>
                                         <input type="password" class="form-control emailKey" placeholder="邮箱发送人密码" aria-describedby="basic-addon1">
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">邮箱模版</span>
+                                        <textarea class="form-control  template" rows="3"></textarea>
                                     </div>
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1">接收用户：</span>
@@ -246,7 +249,8 @@
                         name: $('#elem_setting .modal-body input.name'),
                         key: $('#elem_setting .modal-body input.key'),
                         email: $('#elem_setting .modal-body input.email'),
-                        emailKey: $('#elem_setting .modal-body input.emailKey')
+                        emailKey: $('#elem_setting .modal-body input.emailKey'),
+                        template: $('#elem_setting .modal-body textarea.template')
                     }
                 },
                 login: $('#elem_login'),
@@ -298,13 +302,15 @@
                     elemGroup.btn.dataset.removeAttr('disabled');
                 },
                 setting: function (data) {
-                    elemGroup.setting.find('.modal-header h4').html('设置<span class="label label-danger">' + data.message + '</span>');
+                    elemGroup.setting.find('.modal-header h4').html('设置<span class="label label-danger">' + data.message + '</span>'); 
                     if (data.state) {
                         data = data.data;
                         config.setting = data;
                         //系统设置
                         elemGroup.input.setting.name.val(data.setting.admin.name);
-                        elemGroup.input.setting.key.val(data.setting.admin.key);
+                        elemGroup.input.setting.key.val(data.setting.admin.key); 
+                        elemGroup.input.setting.template.val(data.setting.mail.template.replace(/\'/g, '"'));
+
                         elemGroup.btn.switchBtn.addClass(data.setting.mail.send == true ? (function () {
                             elemGroup.btn.switchBtn.attr('checked', 'checked');
                             return 'active';
@@ -430,11 +436,24 @@
         });
         //设置提交
         elemGroup.btn.setting_sub.click(function () {
-            $(this).attr('disabled', 'disabled').html('登录中,请稍候……');
 
             //系统设置
+            if (elemGroup.input.setting.name.val().length > 0 && elemGroup.input.setting.key.val() <= 0) {
+                alert('请填写管理员密码!');
+                return false;
+            }
             config.setting.setting.admin.name = elemGroup.input.setting.name.val();
             config.setting.setting.admin.key = elemGroup.input.setting.key.val();
+
+            if (elemGroup.input.setting.email.val().length > 0 && elemGroup.input.setting.emailKey.val() <= 0) {
+                alert('请填写邮件发送人密码!');
+                return false;
+            }
+            config.setting.setting.mail.auth.email = elemGroup.input.setting.email.val();
+            config.setting.setting.mail.auth.key = elemGroup.input.setting.emailKey.val();
+
+            config.setting.setting.mail.template = elemGroup.input.setting.template.val();
+
             config.setting.setting.mail.send = (function () { return elemGroup.btn.switchBtn.hasClass('active'); })();
             config.setting.setting.autoReptile = (function () { return elemGroup.btn.autoReptile.hasClass('active'); })();
             config.setting.setting.mail.receive = (function () {
@@ -452,8 +471,6 @@
                 return retData;
             })();
 
-            config.setting.setting.mail.auth.email = elemGroup.input.setting.email.val();
-            config.setting.setting.mail.auth.key = elemGroup.input.setting.emailKey.val();
             //爬虫设置
             config.setting.reptile = [];
             for (var i = 0; i < elemGroup.table.reptile.children().length - 1; i++) {
@@ -482,6 +499,7 @@
                 }
             }
 
+            $(this).attr('disabled', 'disabled').html('登录中,请稍候……');
             soc.setting(config.setting);
         });
     </script>

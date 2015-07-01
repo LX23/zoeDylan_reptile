@@ -24,6 +24,9 @@ table.reptile input {
     margin: 10px 0;
 }
 
+textarea.template{
+    resize:none;
+}
 
 /*开关按钮*/
 

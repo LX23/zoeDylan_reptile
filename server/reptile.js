@@ -7,8 +7,7 @@
     fs = require('fs'),
     config = './settings.json',
     q = require('queue')(),
-    email = require('./mail.js'),
-	handlebars = require('handlebars');
+    email = require('./mail.js');
 
 /*
  * 爬虫核心
@@ -136,15 +135,24 @@ function sendMail(fn) {
         cont = "",
         emails = [],
 		template = function (obj) {
-			return '<p style="margin:10px 0;">【' + obj.name + '】<b>[' + obj.desc + ']</b><a style="margin-left:20px;" href="' + obj.url + '">' + obj.title + '</a></p>';
+			var
+				html = config.setting.mail.template,
+				method = html.match(/{{(\w+)}}/g);
+			for (var i = 0; i < method.length; i++) {
+				var
+					val = method[i],
+					newVal = obj[val.replace(/{{|}}/g, '')];
+				html = html.replace(val, newVal);
+			}
+			return html;
 		};
-	//template = handlebars.compile('<p style="margin:10px 0;">【{{name}}】<a href="{{url}}">{{title}}</a></p>');
 	for (var i = 0; i < config.temp.length; i++) {
 		var
-            val = config.temp[i]; 
+            val = config.temp[i];
+
 		cont += template({
 			name: val.name || val.fUrl,
-			desc:val.desc,
+			desc: val.desc,
 			url: val.url,
 			title: val.title
 		});
@@ -152,7 +160,7 @@ function sendMail(fn) {
 	for (var i = 0; i < config.setting.mail.receive.length; i++) {
 		emails[i] = config.setting.mail.receive[i].email
 	}
-	//console.warn(handlebars);
+	//console.warn(cont);
 	email.sendMail({
 		title: "test",
 		content: cont,
@@ -180,7 +188,7 @@ function dataset(id, fn) {
 	fn(config.temp);
 }
 
-//配置文件获取
+//获取配置文件
 function readConfig() {
 	//获取配置文件 
 	config = readFile((typeof (config) != 'string') ? config.setting.path : config);
@@ -221,7 +229,9 @@ function readConfig() {
 					"name": "",
 					//密码
 					"key": ""
-				}
+				},
+				//邮件模版
+				template: "<p style='margin:10px 0;'>【{{name}}】<b>[{{desc}}]</b><a style='margin-left:20px;' href='{{url}}'>{{title}}</a></p>"
 			}
 		}
 	}
@@ -230,6 +240,7 @@ function readConfig() {
 
 //保存配置文件
 function saveConfig() {
+	config.setting.mail.template = config.setting.mail.template.replace(/\"/g, '\'');
 	saveFile(config.setting.path, JSON.stringify(config));
 }
 
@@ -291,3 +302,4 @@ module.exports = (function () {
 		setting: setting
 	}
 })();
+
