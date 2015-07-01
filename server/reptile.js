@@ -240,7 +240,6 @@ function readConfig() {
 
 //保存配置文件
 function saveConfig() {
-	config.setting.mail.template = config.setting.mail.template.replace(/\"/g, '\'');
 	saveFile(config.setting.path, JSON.stringify(config));
 }
 
@@ -267,13 +266,29 @@ function saveFile(path, cont) {
 //配置文件设置
 function setting(op, fn) {
 	fn = funcDispost(fn);
+	readConfig();
 	if (op) {
+		var
+			message = "配置修改成功!",
+			tempConfig = {
+				userKey: config.setting.admin.key,
+				emailKey: config.setting.mail.auth.key
+			};
 		config = op;
-		console.warn(config);
+		config.setting.mail.template = config.setting.mail.template.replace(/\"/g, '\'');
+		if (config.setting.admin.name.length > 0 && config.setting.admin.key.length <= 0) {
+
+			config.setting.admin.key = tempConfig.userKey;
+		}
+		console.warn(config.setting.admin.key);
+		if (config.setting.mail.auth.email.length > 0 && config.setting.mail.auth.key.length <= 0) {
+			config.setting.mail.auth.key = tempConfig.emailKey;
+		}
+
 		saveConfig();
 		fn({
 			state: true,
-			message: "配置修改成功!",
+			message: message,
 			data: {
 				setting: config.setting,
 				reptile: config.reptile

@@ -101,7 +101,7 @@
                                     </div>
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1">管理员密码</span>
-                                        <input type="password" class="form-control key" placeholder="输入你的密码" aria-describedby="basic-addon1">
+                                        <input type="password" class="form-control key" placeholder="如果密码有更,请输入你的密码" aria-describedby="basic-addon1">
                                     </div>
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1">服务启动自动发送邮件</span>
@@ -127,7 +127,7 @@
                                     </div>
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1">邮箱发送人密码</span>
-                                        <input type="password" class="form-control emailKey" placeholder="邮箱发送人密码" aria-describedby="basic-addon1">
+                                        <input type="password" class="form-control emailKey" placeholder="如果密码有更,请输入你的密码" aria-describedby="basic-addon1">
                                     </div>
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1">邮箱模版</span>
@@ -438,17 +438,17 @@
         elemGroup.btn.setting_sub.click(function () {
 
             //系统设置
-            if (elemGroup.input.setting.name.val().length > 0 && elemGroup.input.setting.key.val() <= 0) {
-                alert('请填写管理员密码!');
-                return false;
-            }
+            //if (elemGroup.input.setting.name.val().length > 0 && elemGroup.input.setting.key.val() <= 0) {
+            //    alert('请填写管理员密码!');
+            //    return false;
+            //}
             config.setting.setting.admin.name = elemGroup.input.setting.name.val();
             config.setting.setting.admin.key = elemGroup.input.setting.key.val();
 
-            if (elemGroup.input.setting.email.val().length > 0 && elemGroup.input.setting.emailKey.val() <= 0) {
-                alert('请填写邮件发送人密码!');
-                return false;
-            }
+            //if (elemGroup.input.setting.email.val().length > 0 && elemGroup.input.setting.emailKey.val() <= 0) {
+            //    alert('请填写邮件发送人密码!');
+            //    return false;
+            //}
             config.setting.setting.mail.auth.email = elemGroup.input.setting.email.val();
             config.setting.setting.mail.auth.key = elemGroup.input.setting.emailKey.val();
 
@@ -498,7 +498,6 @@
                     name: item.children().eq(6).children('input').val()
                 }
             }
-
             $(this).attr('disabled', 'disabled').html('登录中,请稍候……');
             soc.setting(config.setting);
         });
