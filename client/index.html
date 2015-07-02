@@ -18,7 +18,14 @@
     </div>
     <!--按钮组-->
     <div class="btn-group" role="group" aria-label="...">
-        <button type="button" class="btn btn-default">刷新数据</button>
+        <button type="button" class="btn btn-default">获取数据</button>
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">网站列表</span>
+        <select class="fUrlList">
+            <option>全部</option>
+        </select>
     </div>
     <!--列表-->
     <div class="container-fluid">
@@ -50,34 +57,86 @@
         </div>
     </div>
     <script>
+        $(window).keypress(function () {
+            var
+                keyCode = event.keyCode;
+            if (keyCode == 13) {
+                if ($('#elem_login').hasClass('in')) {
+                    elemGroup.btn.login.click();
+                }
+            }
+        });
         var
             elemGroup = {
                 btnGroup: $('.btn-group'),
                 btn: {
-                    dataset: $('.btn-group').children().eq(0)
+                    dataset: $('.btn-group').children().eq(0),
                 },
                 table: {
                     datalist: $('.table.datalist tbody')
+                },
+                tableGroup: $('.table'),
+                select: {
+                    fUrlList: $('select.fUrlList')
                 }
             }
+         
         var
             config = {},
-            soc = new base({
+            _display = {
+                message: function (data) {
+                    var
+                        fe = $('.message'),
+                        info = fe.children('.alert-info');
+                    if (typeof data == 'string') {
+                        info.prepend(data + '<br />');
+                    }
+                },
                 dataset: function (data) {
+                    var
+                        id = null;
+                    if (typeof (data) == 'number') {
+                        id = data;
+                        id = elemGroup.select.fUrlList.children().eq((id + 1)).attr('url');
+                        data = config.datalist;
+
+                    } else {
+                        config.datalist = data;
+                    }
                     elemGroup.table.datalist.html('');
+                    if (id == null) {
+                        elemGroup.select.fUrlList.html('<option>全部</option>');
+                        config.fUrlList = [];
+                    }
                     for (var i = 0; i < data.length; i++) {
                         var
-                            item = data[i];
+                            item = data[i],
+                            fUrlList = item.fUrl;
+                        if (id != null && item.fUrl != id) {
+                            continue;
+                        }
+
+                        if (config.fUrlList.indexOf(fUrlList) < 0 && id == null) {
+                            config.fUrlList[config.fUrlList.length] = fUrlList;
+                            elemGroup.select.fUrlList.append('<option fid="' + (config.fUrlList.length - 1) + '" url="' + item.fUrl + '">' + (item.name || item.fUrl) + '</option>');
+                        }
                         elemGroup.table.datalist.append('<tr><td><a target="_blank" href="' + item.fUrl + '">' + item.name + '</a></td><td>' + item.place + '</td><td><a target="_blank" href="' + item.url + '">' + item.title + '</a></td><td>' + item.desc + '</td><td>' + item.time + '</td></tr>');
                     }
                     elemGroup.btn.dataset.removeAttr('disabled');
                 }
-            });
+            },
+            soc = new base(_display);
 
+    
+        //切换网站
+        elemGroup.select.fUrlList.change(function () {
+            _display.dataset(parseInt($(this).children('option:selected').attr('fid')));
+        });
+    
         //按钮组所有按钮
         elemGroup.btnGroup.children().click(function () {
             $(this).attr('disabled', 'disabled');
-        });
+        }); 
         //数据获取按钮
         elemGroup.btn.dataset.click(function () {
             soc.dataset();
