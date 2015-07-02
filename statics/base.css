@@ -31,6 +31,9 @@ textarea.template{
     resize:none;
 }
 
+table.datalist tbody tr:hover{
+    background:#bce8f1;
+} 
 /*开关按钮*/
 
 .btn-switch {

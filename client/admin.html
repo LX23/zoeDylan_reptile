@@ -22,6 +22,13 @@
         <button type="button" class="btn btn-default">请求服务器刷新</button>
         <button type="button" class="btn btn-default">修改配置文件</button>
     </div>
+
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">网站列表</span>
+        <select class="fUrlList">
+            <option>全部</option>
+        </select>
+    </div>
     <!--列表-->
     <div class="container-fluid">
         <div class="row-fluid">
@@ -57,7 +64,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">配置</h4>
+                    <h4 class="modal-title">登录</h4>
                 </div>
                 <div class="modal-body">
                     <div class="input-group">
@@ -94,77 +101,75 @@
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="panel-537415">
-                                <p>
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1">管理员帐号</span>
-                                        <input type="text" class="form-control name" placeholder="输入你的帐号" aria-describedby="basic-addon1">
-                                    </div>
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1">管理员密码</span>
-                                        <input type="password" class="form-control key" placeholder="如果密码有更,请输入你的密码" aria-describedby="basic-addon1">
-                                    </div>
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1">服务启动自动发送邮件</span>
-                                        <label class="btn-switch email">
-                                            <input type="checkbox">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                        </label>
-                                    </div>
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1">服务启动自动刷新爬虫数据</span>
-                                        <label class="btn-switch autoReptile">
-                                            <input type="checkbox">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                        </label>
-                                    </div>
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1">邮箱发送人帐号</span>
-                                        <input type="text" class="form-control email" placeholder="邮箱发送人帐号" aria-describedby="basic-addon1">
-                                    </div>
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1">邮箱发送人密码</span>
-                                        <input type="password" class="form-control emailKey" placeholder="如果密码有更,请输入你的密码" aria-describedby="basic-addon1">
-                                    </div>
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1">邮箱模版</span>
-                                        <textarea class="form-control  template" rows="3"></textarea>
-                                    </div>
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1">接收用户：</span>
-                                        <table class="table receive">
-                                            <thead>
-                                                <tr>
-                                                    <th>
-                                                        操作
-                                                    </th>
-                                                    <th>
-                                                        姓名
-                                                    </th>
-                                                    <th>
-                                                        邮箱
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <button class="remMe">删除</button>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" />
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" />
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </p>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">管理员帐号</span>
+                                    <input type="text" class="form-control name" placeholder="输入你的帐号" aria-describedby="basic-addon1">
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">管理员密码</span>
+                                    <input type="password" class="form-control key" placeholder="如果密码有更,请输入你的密码" aria-describedby="basic-addon1">
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">服务启动自动发送邮件</span>
+                                    <label class="btn-switch email">
+                                        <input type="checkbox">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">服务启动自动刷新爬虫数据</span>
+                                    <label class="btn-switch autoReptile">
+                                        <input type="checkbox">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">邮箱发送人帐号</span>
+                                    <input type="text" class="form-control email" placeholder="邮箱发送人帐号" aria-describedby="basic-addon1">
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">邮箱发送人密码</span>
+                                    <input type="password" class="form-control emailKey" placeholder="如果密码有更,请输入你的密码" aria-describedby="basic-addon1">
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">邮箱模版</span>
+                                    <textarea class="form-control  template" rows="3"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">接收用户：</span>
+                                    <table class="table receive">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    操作
+                                                </th>
+                                                <th>
+                                                    姓名
+                                                </th>
+                                                <th>
+                                                    邮箱
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <button class="remMe">删除</button>
+                                                </td>
+                                                <td>
+                                                    <input type="text" />
+                                                </td>
+                                                <td>
+                                                    <input type="text" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <div class="tab-pane" id="panel-62718">
                                 <table class="table reptile">
@@ -228,6 +233,15 @@
         </div><!-- /.modal-dialog -->
     </div>
     <script>
+        $(window).keypress(function () {
+            var
+                keyCode = event.keyCode;
+            if (keyCode == 13) {
+                if ($('#elem_login').hasClass('in')) {
+                    elemGroup.btn.login.click();
+                }
+            }
+        });
         var
             elemGroup = {
                 btnGroup: $('.btn-group'),
@@ -260,22 +274,30 @@
                     reptile: $('.table.reptile tbody'),
                     receive: $('.table.receive tbody')
                 },
-                tableGroup: $('.table')
+                tableGroup: $('.table'),
+                window: {
+                    login: $('#elem_login'),
+                    setting: $('#elem_setting')
+                },
+                select: {
+                    fUrlList: $('select.fUrlList')
+                }
             }
 
-        $('#elem_login').modal({
+        elemGroup.window.login.modal({
             show: true,
             keyboard: false,
             backdrop: 'static'
         });
-        $('#elem_setting').modal({
+        elemGroup.input.login.name.focus();
+        elemGroup.window.setting.modal({
             show: false,
             keyboard: false,
             backdrop: 'static'
         });
         var
             config = {},
-            soc = new base({
+            _display = {
                 message: function (data) {
                     var
                         fe = $('.message'),
@@ -293,22 +315,45 @@
                     elemGroup.btn.login.removeAttr('disabled').html('登录');
                 },
                 dataset: function (data) {
+                    var
+                        id = null;
+                    if (typeof (data) == 'number') {
+                        id = data;
+                        id = elemGroup.select.fUrlList.children().eq((id + 1)).attr('url');
+                        data = config.datalist;
+
+                    } else {
+                        config.datalist = data;
+                    }
                     elemGroup.table.datalist.html('');
+                    if (id == null) {
+                        elemGroup.select.fUrlList.html('<option>全部</option>');
+                        config.fUrlList = [];
+                    }
                     for (var i = 0; i < data.length; i++) {
                         var
-                            item = data[i];
+                            item = data[i],
+                            fUrlList = item.fUrl;
+                        if (id != null && item.fUrl != id) {
+                            continue;
+                        } 
+                        
+                        if (config.fUrlList.indexOf(fUrlList) < 0 && id == null) {
+                            config.fUrlList[config.fUrlList.length] = fUrlList;
+                            elemGroup.select.fUrlList.append('<option fid="' + (config.fUrlList.length - 1) + '" url="' + item.fUrl + '">' + (item.name || item.fUrl) + '</option>');
+                        }
                         elemGroup.table.datalist.append('<tr><td><a target="_blank" href="' + item.fUrl + '">' + item.name + '</a></td><td>' + item.place + '</td><td><a target="_blank" href="' + item.url + '">' + item.title + '</a></td><td>' + item.desc + '</td><td>' + item.time + '</td></tr>');
-                    }
+                        }
                     elemGroup.btn.dataset.removeAttr('disabled');
                 },
                 setting: function (data) {
-                    elemGroup.setting.find('.modal-header h4').html('设置<span class="label label-danger">' + data.message + '</span>'); 
+                    elemGroup.setting.find('.modal-header h4').html('设置<span class="label label-danger">' + data.message + '</span>');
                     if (data.state) {
                         data = data.data;
                         config.setting = data;
                         //系统设置
                         elemGroup.input.setting.name.val(data.setting.admin.name);
-                        elemGroup.input.setting.key.val(data.setting.admin.key); 
+                        elemGroup.input.setting.key.val(data.setting.admin.key);
                         elemGroup.input.setting.template.val(data.setting.mail.template.replace(/\'/g, '"'));
 
                         elemGroup.btn.switchBtn.addClass(data.setting.mail.send == true ? (function () {
@@ -359,7 +404,8 @@
                 reset: function () {
                     elemGroup.btn.reset.removeAttr('disabled');
                 }
-            });
+            },
+            soc = new base(_display);
 
         //添加按钮
         elemGroup.tableGroup.delegate('button.additem', 'click', function () {
@@ -369,7 +415,7 @@
         elemGroup.tableGroup.delegate('button.remitem', 'click', function () {
             var
                 input = $(this).parent().children('input');
-            if (input.length > 1) {
+            if (input.length >= 1) {
                 input.eq(input.length - 1).remove();
                 $(this).parent().children('br').eq(input.length - 1).remove();
             }
@@ -395,6 +441,10 @@
         //移除一行按钮
         elemGroup.tableGroup.delegate('button.remMe', 'click', function () {
             $(this).parent().parent().remove();
+        });
+        //切换网站
+        elemGroup.select.fUrlList.change(function () {
+            _display.dataset(parseInt($(this).children('option:selected').attr('fid')));
         });
         //开关按钮
         elemGroup.btn.switchBtn.change(function () {
@@ -423,6 +473,7 @@
         elemGroup.btn.dataset.click(function () {
             soc.dataset();
         });
+        elemGroup.btn.dataset.click();
         //登录按钮
         elemGroup.btn.login.click(function () {
             $(this).attr('disabled', 'disabled').html('登录中,请稍候……');

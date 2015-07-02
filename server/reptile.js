@@ -50,8 +50,11 @@ function reset(id, fn, end) {
 			//a标签循环
 			$(all).each(function () {
 				var
-					elem = $(this),
-                    nowCont = {
+					elem = $(this);
+				if (!elem.attr('href')) {
+					return false;
+				}
+                  var  nowCont = {
                     	url: elem.attr('href').replace(/^\s|\s$/, ""),
                     	title: iconv.encode(elem.html(), 'utf-8').toString('UTF-8'),
                     	fUrl: op.url,
@@ -182,7 +185,7 @@ function funcDispost(fn) {
  */
 function dataset(id, fn) {
 	var
-        cont = readFile(config.setting.dataPath);
+        cont = readFile(config.setting.dataPath + config.setting.jsonData);
 	readConfig();
 	if (config.temp.length <= 0 && cont) { config.temp = JSON.parse(cont); } else { cont = []; }
 	fn(config.temp);
@@ -194,13 +197,24 @@ function readConfig() {
 	config = readFile((typeof (config) != 'string') ? config.setting.path : config);
 	config = config ? JSON.parse(config) : {
 		//爬虫匹配
-		"reptile": [],
+		"reptile": [{
+			"url": "http://cd.qq.com/",
+			"selector": [{
+				"elem": "#fsD1 a",
+				"desc": "轮播位"
+			}],
+			"encoding": "gbk",
+			"name": "大成网(腾讯新闻)",
+			"getPage": false
+		}],
 		//设置
 		"setting": {
 			//配置文件位置
 			"path": "./settings.json",
-			//数据保存文件位置
-			"dataPath": "./db/reptile.data.json",
+			//数据保存文件夹位置
+			"dataPath": "./db/",
+			//json数据文件
+			"jsonData": "reptile.data.json",
 			//自动爬取
 			"autoReptile": false,
 			//管理员信息
@@ -245,7 +259,7 @@ function saveConfig() {
 
 //保存数据
 function saveData() {
-	saveFile(config.setting.dataPath, JSON.stringify(config.temp));
+	saveFile(config.setting.dataPath + config.setting.jsonData, JSON.stringify(config.temp));
 }
 
 //读取文件
@@ -280,7 +294,7 @@ function setting(op, fn) {
 
 			config.setting.admin.key = tempConfig.userKey;
 		}
-		console.warn(config.setting.admin.key);
+
 		if (config.setting.mail.auth.email.length > 0 && config.setting.mail.auth.key.length <= 0) {
 			config.setting.mail.auth.key = tempConfig.emailKey;
 		}
