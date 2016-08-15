@@ -1,6 +1,6 @@
 {
-    "name": "IIOO",
-    "description": "IIOO",
+    "name": "reptile",
+    "description": "reptile",
     "version": "0.0.1",
     "private": true,
     "dependencies": {
